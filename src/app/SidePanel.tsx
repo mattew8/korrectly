@@ -1,5 +1,5 @@
 import { SelectElementSidePanelPage } from '@/pages/select-element/side-panel';
-import { useExtensionRouter } from '@/shared/router/extension-router';
+import { useExtensionRouter } from '@/shared/router';
 
 const SidePanel = () => {
   const { path } = useExtensionRouter();
