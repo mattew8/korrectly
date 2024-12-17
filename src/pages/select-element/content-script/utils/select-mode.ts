@@ -35,7 +35,7 @@ export class SelectMode {
     if (!this.root) return;
 
     const target = event.target as HTMLElement | null;
-    if (!target) return;
+    if (!target || !target.innerText) return;
 
     this.handleClick &&
       target.addEventListener('mousedown', this.handleClick, true);
