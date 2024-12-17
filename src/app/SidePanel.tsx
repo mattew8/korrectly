@@ -1,15 +1,15 @@
-import { SelectElementSidePanelPage } from '@/pages/select-element/side-panel';
 import { useExtensionRouter } from '@/shared/router';
+import { SelectElementSidePanelPage } from '@/pages/select-element/side-panel';
+import { SpellingCheckSidePanelPage } from '@/pages/spelling-check/side-panel';
 
 const SidePanel = () => {
   const { path } = useExtensionRouter();
-
   if (path === 'select-element') {
     return <SelectElementSidePanelPage />;
   }
 
   if (path === 'spelling-check') {
-    return <div>검사할 영역을 선택해주세요.</div>;
+    return <SpellingCheckSidePanelPage />;
   }
 
   return <div>Korrectly</div>;
