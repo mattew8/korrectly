@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { SelectMode } from '../utils/select-mode';
 import { useExtensionRouter } from '@/shared/router';
-import { chromeStorage } from '@/shared/database';
+import { spellCheckWordsStorage } from '@/feature/select-spell-check-words';
 
 export const SelectElementContentScriptPage = () => {
   const { push } = useExtensionRouter();
@@ -10,7 +10,7 @@ export const SelectElementContentScriptPage = () => {
     const selectMode = new SelectMode(document.body);
     selectMode.on(async (element) => {
       const textLines = element.innerText?.split('\n');
-      await chromeStorage.create('target-words', textLines);
+      await spellCheckWordsStorage.create(textLines);
       push('spelling-check');
     });
     return () => {

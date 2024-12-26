@@ -1,28 +1,28 @@
 import { useEffect, useState } from 'react';
-import { chromeStorage, Listener } from '@/shared/database';
+import { Listener } from '@/shared/database';
+import { spellCheckWordsStorage } from '../model/spell-check-words-storage';
 
-const useSpellingCheckWords = () => {
+const useSpellCheckWords = () => {
   const [targetWords, setTargetWords] = useState<string[]>([]);
 
   useEffect(() => {
-    chromeStorage.get<string[]>('target-words').then((words) => {
+    spellCheckWordsStorage.get().then((words) => {
       if (words) {
         setTargetWords(words);
       }
     });
-
     const listener: Listener = (changes, namespace) => {
       if (namespace === 'local' && changes['target-words']) {
         setTargetWords(changes['target-words'].newValue);
       }
     };
-    chromeStorage.addListener(listener);
+    spellCheckWordsStorage.addListener(listener);
     return () => {
-      chromeStorage.removeListener(listener);
+      spellCheckWordsStorage.removeListener(listener);
     };
   }, []);
 
   return targetWords;
 };
 
-export default useSpellingCheckWords;
+export default useSpellCheckWords;
