@@ -9,7 +9,7 @@ export class SpellChecker {
     this.openAIClient = openAIClient;
   }
 
-  async checkSpell(text: string): Promise<SpellCheckResult> {
+  async checkSpell(text: string): Promise<SpellCheckResult[]> {
     const completion = await this.openAIClient.chatCompletionsCreate({
       messages: [...SPELL_CHECK_PROMPT, { role: 'user', content: text }],
       model: 'gpt-4o-mini',
@@ -22,6 +22,6 @@ export class SpellChecker {
     if (answer === null || answer === undefined || answer.length === 0) {
       throw new Error('검색 결과가 없습니다!');
     }
-    return JSON.parse(answer) as SpellCheckResult;
+    return JSON.parse(answer) as SpellCheckResult[];
   }
 }
