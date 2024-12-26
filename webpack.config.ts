@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   mode: 'production',
@@ -52,6 +53,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [{ from: 'public', to: '.' }],
     }),
+    new Dotenv(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json', '.jsx'],
