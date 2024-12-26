@@ -1,12 +1,21 @@
+import { useEffect, useState } from 'react';
 import { useExtensionRouter } from '@/shared/router';
-import {
-  spellCheckWordsStorage,
-  useSpellCheckWords,
-} from '@/feature/select-spell-check-words';
+import { spellCheckWordsStorage } from '@/feature/select-spell-check-words';
 
 const ConfirmStartCheckSidePanel = () => {
   const { push } = useExtensionRouter();
-  const targetWords = useSpellCheckWords();
+  const [targetWords, setTargetWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    handleSetSelectedWords();
+  }, []);
+
+  const handleSetSelectedWords = async () => {
+    const targetWords = await spellCheckWordsStorage.get();
+    if (targetWords) {
+      setTargetWords(targetWords);
+    }
+  };
 
   const handleResetWords = () => {
     spellCheckWordsStorage.reset();
