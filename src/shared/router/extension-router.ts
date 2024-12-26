@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { RouterPath } from './interface';
 
 export const useExtensionRouter = () => {
-  const [path, setPath] = useState<RouterPath>('select-element');
+  const [path, setPath] = useState<RouterPath>('');
 
   useEffect(() => {
     chrome.storage.local.get('url').then((data) => {

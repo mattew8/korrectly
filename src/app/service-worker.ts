@@ -6,5 +6,6 @@ chrome.action.onClicked.addListener((tab) => {
     return;
   }
   chromeStorage.remove('target-words');
+  chromeStorage.create('url', 'select-element');
   chrome.sidePanel.open({ tabId });
 });
