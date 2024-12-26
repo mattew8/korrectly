@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useExtensionRouter } from '@/shared/router';
 import { spellCheckWordsStorage } from '@/feature/select-spell-check-words';
+import { selectTargetElementManager } from '@/feature/select-target-element';
 
 const ConfirmStartCheckSidePanel = () => {
   const { push } = useExtensionRouter();
@@ -17,8 +18,9 @@ const ConfirmStartCheckSidePanel = () => {
     }
   };
 
-  const handleResetWords = () => {
+  const handleResetWords = async () => {
     spellCheckWordsStorage.reset();
+    await selectTargetElementManager.sendRemoveAllElementMessage();
     push('select-element');
   };
 
