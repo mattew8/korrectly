@@ -1,1 +1,5 @@
-export type RouterPath = '' | 'select-element' | 'spelling-check';
+export type RouterPath =
+  | ''
+  | 'select-element'
+  | 'confirm-start-check'
+  | 'spelling-check';

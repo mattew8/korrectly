@@ -11,7 +11,7 @@ export const SelectElementContentScriptPage = () => {
     selectMode.on(async (element) => {
       const textLines = element.innerText?.split('\n');
       await spellCheckWordsStorage.create(textLines);
-      push('spelling-check');
+      push('confirm-start-check');
     });
     return () => {
       selectMode.off();
