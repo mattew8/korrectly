@@ -1,4 +1,4 @@
-type KeyType = 'target-words';
+type KeyType = 'target-words' | 'url';
 export type Listener = (
   changes: { [key: string]: chrome.storage.StorageChange },
   namespace: chrome.storage.AreaName,
@@ -7,6 +7,7 @@ export type Listener = (
 export interface Storage {
   get<T>(key: KeyType): Promise<T | null>;
   create(key: KeyType, value: unknown): Promise<void>;
+  remove(key: KeyType | KeyType[]): Promise<void>;
   addListener(listener: Listener): void;
   removeListener(listener: Listener): void;
 }
@@ -21,6 +22,10 @@ export const chromeStorage: Storage = {
     return chrome.storage.local.set({
       [key]: value,
     });
+  },
+
+  remove(key: string | string[]) {
+    return chrome.storage.local.remove(key);
   },
 
   addListener(listener) {
