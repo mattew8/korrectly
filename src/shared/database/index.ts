@@ -1,4 +1,4 @@
-type KeyType = 'target-words' | 'url';
+type KeyType = 'target-words' | 'url' | 'spell-check-results';
 export type Listener = (
   changes: { [key: string]: chrome.storage.StorageChange },
   namespace: chrome.storage.AreaName,
