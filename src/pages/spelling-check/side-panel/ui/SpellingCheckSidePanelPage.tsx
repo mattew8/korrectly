@@ -6,6 +6,7 @@ import {
   CurrentSpellCheckResult,
   spellCheckManager,
 } from '@/feature/check-spell';
+import { changeDomTextManager } from '@/feature/change-dom-text';
 
 const EXAMPLE_RESULT = [
   {
@@ -77,7 +78,14 @@ const SpellingCheckSidePanelPage = () => {
   };
 
   const handleApplyCorrection = () => {
-    // TODO: 맞춤법 수정 결과를 DOM에 반영하는 로직 추가
+    if (spellCheckResults === null || spellCheckResults === 'finished') {
+      return;
+    }
+    changeDomTextManager.sendChangeDomTextMessage({
+      targetSentence: spellCheckResults.sentence,
+      targetWord: spellCheckResults.error.input,
+      replaceWord: spellCheckResults.error.output,
+    });
     showNextResult();
   };
 
