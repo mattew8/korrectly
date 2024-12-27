@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { selectTargetElementManager } from '@/feature/select-target-element';
-import {
-  changeDomTextManager,
-  ChangeDomTextMessage,
-} from '@/feature/change-dom-text';
+import { changeDomTextManager } from '@/feature/change-dom-text';
+import { highlightWordManager } from '@/feature/highlight-word';
 
 const SpellingCheckContentScript = () => {
   useEffect(() => {
@@ -12,13 +10,21 @@ const SpellingCheckContentScript = () => {
       changeDomTextManager.initializeHistory(selectedElement);
     }
 
-    changeDomTextManager.onMessage((message: ChangeDomTextMessage) => {
+    changeDomTextManager.onMessage((message) => {
       const { targetSentence, targetWord, replaceWord } = message.content;
       changeDomTextManager.replaceText(targetSentence, targetWord, replaceWord);
     });
 
+    highlightWordManager.onMessage((message) => {
+      const { targetWord } = message;
+      if (selectedElement) {
+        highlightWordManager.highlightWord(selectedElement, targetWord);
+      }
+    });
+
     return () => {
       changeDomTextManager.removeListener();
+      highlightWordManager.removeListener();
     };
   }, []);
 
