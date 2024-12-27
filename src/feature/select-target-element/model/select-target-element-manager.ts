@@ -13,7 +13,19 @@ class SelectTargetElementManager {
       '[data-korrectly-check-element]',
     );
     selectedElements.forEach((element) => {
-      element.style.border = '1px solid red';
+      // 선택된 요소 스타일링
+      element.style.position = 'relative'; // 박스 쉐도우를 위한 position 설정
+      element.style.border = '2px solid #4F46E5'; // 인디고 계열 테두리
+      element.style.borderRadius = '4px';
+      element.style.boxShadow = '0 0 0 4px rgba(79, 70, 229, 0.2)';
+      element.style.transition = 'all 0.2s ease';
+      element.style.backgroundColor = 'rgba(79, 70, 229, 0.02)';
+
+      // 기존 패딩이 없는 경우에만 패딩 추가
+      const currentPadding = window.getComputedStyle(element).padding;
+      if (currentPadding === '0px') {
+        element.style.padding = '8px';
+      }
     });
   }
 
@@ -57,7 +69,13 @@ class SelectTargetElementManager {
       '[data-korrectly-check-element]',
     );
     selectedElements.forEach((element) => {
-      element.style.border = 'none';
+      element.style.removeProperty('position');
+      element.style.removeProperty('border');
+      element.style.removeProperty('border-radius');
+      element.style.removeProperty('box-shadow');
+      element.style.removeProperty('transition');
+      element.style.removeProperty('background-color');
+      element.style.removeProperty('padding');
     });
   }
 }

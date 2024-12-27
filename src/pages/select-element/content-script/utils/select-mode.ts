@@ -79,14 +79,18 @@ export class SelectMode {
 
     overlayElement.setAttribute('data-korrectly-overlay', 'overlay');
     overlayElement.style.position = 'fixed';
-    overlayElement.style.border = '2px solid #3D3DF2';
+    overlayElement.style.border = '2px solid #4F46E5';
     overlayElement.style.borderRadius = '4px';
+    overlayElement.style.boxShadow = '0 0 0 4px rgba(79, 70, 229, 0.2)';
+    overlayElement.style.backgroundColor = 'rgba(79, 70, 229, 0.02)';
+    overlayElement.style.transition = 'all 0.2s ease';
     overlayElement.style.zIndex = '10000';
     overlayElement.style.pointerEvents = 'none';
-    overlayElement.style.width = `${width + 4}px`;
-    overlayElement.style.height = `${height + 4}px`;
-    overlayElement.style.top = `${top - 2}px`;
-    overlayElement.style.left = `${left - 2}px`;
+
+    overlayElement.style.width = `${width + 8}px`;
+    overlayElement.style.height = `${height + 8}px`;
+    overlayElement.style.top = `${top - 4}px`;
+    overlayElement.style.left = `${left - 4}px`;
 
     return overlayElement;
   };
