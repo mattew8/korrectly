@@ -1,6 +1,6 @@
 {
   "name": "Korrectly - 한국어 맞춤법 검사기",
-  "description": "Korrectly is a powerful Chrome extension designed to assist users with Korean grammar and spelling correction effortlessly. Whether you’re writing a blog post, crafting an email, or simply editing text on any website, Korrectly helps ensure your writing is accurate and professional.",
+  "description": "Korrectly는 복사/붙여넣기 없이 웹페이지에서 바로 맞춤법을 검사하고 수정할 수 있는 크롬 확장 프로그램입니다. 사이드 패널을 통해 작업 화면을 방해하지 않고 맞춤법을 검사하며, 수정이 필요한 부분을 하나씩 확인하고 선택적으로 반영할 수 있어 고유명사 등이 강제로 변경되는 것을 방지합니다.",
   "manifest_version": 3,
   "version": "1.0.0",
   "permissions": ["sidePanel", "storage", "tabs"],
