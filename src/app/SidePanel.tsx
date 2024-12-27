@@ -2,6 +2,7 @@ import { useExtensionRouter } from '@/shared/router';
 import { SelectElementSidePanelPage } from '@/pages/select-element/side-panel';
 import { ConfirmStartCheckSidePanel } from '@/pages/confirm-start-check/side-panel';
 import { SpellingCheckSidePanelPage } from '@/pages/spelling-check/side-panel';
+import './assets/index.css';
 
 const SidePanel = () => {
   const { path } = useExtensionRouter();

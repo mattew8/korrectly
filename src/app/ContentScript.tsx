@@ -1,6 +1,7 @@
 import { useExtensionRouter } from '@/shared/router';
 import { SelectElementContentScriptPage } from '@/pages/select-element/content-script';
 import { ConfirmStartCheckContentScript } from '@/pages/confirm-start-check/content-script';
+import './assets/index.css';
 
 const ContentScript = () => {
   const { path } = useExtensionRouter();
