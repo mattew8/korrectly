@@ -76,10 +76,32 @@ class ChangeDomTextManager {
         this.normalizeString(h.originalSentence) ===
         this.normalizeString(targetSentence),
     );
+
     if (history) {
-      const newText = history.currentSentence.replace(targetWord, replaceWord);
-      history.currentSentence = newText;
-      history.node.textContent = newText;
+      const parentElement = history.node.parentElement;
+      if (parentElement) {
+        const fullText = parentElement.textContent || '';
+        const newText = fullText.replace(targetWord, replaceWord);
+
+        while (parentElement.firstChild) {
+          parentElement.removeChild(parentElement.firstChild);
+        }
+        parentElement.textContent = newText;
+
+        // firstChild가 null이 아닌지 확인 후 history 업데이트
+        const newNode = parentElement.firstChild;
+        if (newNode) {
+          history.currentSentence = newText;
+          history.node = newNode;
+        }
+      } else {
+        const newText = history.currentSentence.replace(
+          targetWord,
+          replaceWord,
+        );
+        history.currentSentence = newText;
+        history.node.textContent = newText;
+      }
     }
   }
 
