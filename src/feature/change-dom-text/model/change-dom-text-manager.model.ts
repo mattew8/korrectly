@@ -59,6 +59,10 @@ class ChangeDomTextManager {
     }
   }
 
+  private normalizeString(str: string) {
+    return str.replace(/\s+/g, ' '); // 연속된 공백을 하나로 통일
+  }
+
   /**
    * 지정된 문장 내의 특정 단어를 새로운 단어로 교체
    * 원본 문장을 기준으로 올바른 노드를 찾아 텍스트를 변경
@@ -68,9 +72,10 @@ class ChangeDomTextManager {
    */
   replaceText(targetSentence: string, targetWord: string, replaceWord: string) {
     const history = this.sentenceHistory.find(
-      (h) => h.originalSentence === targetSentence,
+      (h) =>
+        this.normalizeString(h.originalSentence) ===
+        this.normalizeString(targetSentence),
     );
-
     if (history) {
       const newText = history.currentSentence.replace(targetWord, replaceWord);
       history.currentSentence = newText;
