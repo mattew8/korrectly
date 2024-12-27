@@ -1,44 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useExtensionRouter } from '@/shared/router';
-// import { spellChecker } from '@/shared/spell-checker';
+import { spellChecker } from '@/shared/spell-checker';
 import { spellCheckWordsStorage } from '@/feature/select-spell-check-words';
 import {
   CurrentSpellCheckResult,
   spellCheckManager,
 } from '@/feature/check-spell';
 import { changeDomTextManager } from '@/feature/change-dom-text';
-
-const EXAMPLE_RESULT = [
-  {
-    sentence: '안녕하세요 반갑습니다.',
-    result: [],
-  },
-  {
-    sentence: '테스트 입니다.',
-    result: [
-      {
-        input: '테스트 입니다.',
-        output: '테스트입니다.',
-        etype: 'error',
-      },
-    ],
-  },
-  {
-    sentence: '그리고 무엇을 작성해면 조을까요?',
-    result: [
-      {
-        input: '작성해면',
-        output: '작성하면',
-        etype: 'error',
-      },
-      {
-        input: '조을까요?',
-        output: '좋을까요?',
-        etype: 'error',
-      },
-    ],
-  },
-];
 
 const SpellingCheckSidePanelPage = () => {
   const { push } = useExtensionRouter();
@@ -58,9 +26,8 @@ const SpellingCheckSidePanelPage = () => {
       return;
     }
     try {
-      // const result = await spellChecker.checkSpell(words.join(' '));
-      const exampleResult = EXAMPLE_RESULT;
-      spellCheckManager.setResults(exampleResult);
+      const result = await spellChecker.checkSpell(words.join(' '));
+      spellCheckManager.setResults(result);
       showNextResult();
     } catch (error) {
       console.error(error);
