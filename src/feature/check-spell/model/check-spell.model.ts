@@ -12,42 +12,63 @@ export class SpellCheckManager {
 
   setResults(spellCheckResults: SpellCheckResult[]) {
     this.spellCheckResults = spellCheckResults;
+    this.currentResultIndex = 0;
+    this.currentErrorIndex = 0;
   }
 
   getCurrentResult(): CurrentSpellCheckResult | null {
-    // 결과가 없는 경우
-    if (this.spellCheckResults.length === 0) {
+    // 모든 결과를 검사했다면 null 반환
+    if (this.currentResultIndex >= this.spellCheckResults.length) {
       return null;
     }
 
-    const currentResult = this.spellCheckResults[this.currentResultIndex];
+    // 현재 result부터 시작해서 오류가 있는 첫 번째 result를 찾음
+    while (this.currentResultIndex < this.spellCheckResults.length) {
+      const currentResult = this.spellCheckResults[this.currentResultIndex];
 
-    // 현재 result의 오류가 없는 경우
-    if (!currentResult?.result || currentResult.result.length === 0) {
-      return null;
-    }
+      // currentResult가 undefined인 경우 다음으로 넘어감
+      if (!currentResult) {
+        this.currentResultIndex++;
+        this.currentErrorIndex = 0;
+        continue;
+      }
 
-    const currentError = currentResult.result[this.currentErrorIndex];
+      // 현재 result에 오류가 있는지 확인
+      if (currentResult.result && currentResult.result.length > 0) {
+        const currentError = currentResult.result[this.currentErrorIndex];
 
-    // 다음 인덱스 준비
-    this.prepareNextIndex();
+        // currentError가 undefined인 경우 다음으로 넘어감
+        if (!currentError) {
+          this.prepareNextIndex();
+          continue;
+        }
 
-    return currentError
-      ? {
+        // 다음 검사를 위해 인덱스 준비
+        this.prepareNextIndex();
+
+        return {
           sentence: currentResult.sentence,
           error: currentError,
-        }
-      : null;
+        };
+      }
+
+      // 현재 result에 오류가 없다면 다음 result로 이동
+      this.currentResultIndex++;
+      this.currentErrorIndex = 0;
+    }
+
+    // 모든 result를 검사했지만 오류를 찾지 못한 경우
+    return null;
   }
 
   private prepareNextIndex(): void {
-    // 현재 result 내의 다음 오류로 이동
     this.currentErrorIndex++;
 
+    const currentResult = this.spellCheckResults[this.currentResultIndex];
     // 현재 result의 모든 오류를 확인했다면
     if (
-      this.currentErrorIndex >=
-      (this.spellCheckResults[this.currentResultIndex]?.result.length ?? 0)
+      !currentResult?.result ||
+      this.currentErrorIndex >= currentResult.result.length
     ) {
       this.currentErrorIndex = 0;
       this.currentResultIndex++;
