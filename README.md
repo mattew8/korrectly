@@ -8,6 +8,8 @@ Korrectly는 기존 맞춤법 검사기와 달리, 별도의 사이트 방문이
 
 ## 주요 기능
 
+![2024-12-276 09 23-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/dbe7288e-a690-4371-ba85-e2b390d9015b)
+
 - ✨ 복사/붙여넣기 없이 웹페이지에서 바로 맞춤법 검사
 - 🔄 사이드 패널을 통한 작업 화면 방해 없는 교정 제안
 - 📝 수정 필요 부분 하나씩 확인하고 선택적 반영 가능
@@ -24,10 +26,15 @@ Korrectly는 기존 맞춤법 검사기와 달리, 별도의 사이트 방문이
    ```env
    OPENAI_API_KEY='your-api-key-here'
    ```
-3. Chrome 브라우저에서 `chrome://extensions` 접속
-4. 우측 상단의 '개발자 모드' 활성화
-5. '압축해제된 확장 프로그램을 로드합니다' 클릭
-6. 다운로드 받은 폴더 선택
+3. 의존성 패키지 설치 및 빌드:
+   ```bash
+   yarn install
+   yarn build
+   ```
+4. Chrome 브라우저에서 `chrome://extensions` 접속
+5. 우측 상단의 '개발자 모드' 활성화
+6. '압축해제된 확장 프로그램을 로드합니다' 클릭
+7. 빌드된 `dist` 폴더 선택
 
 ## 사용 방법
 
