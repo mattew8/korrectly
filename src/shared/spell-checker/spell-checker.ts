@@ -11,7 +11,13 @@ export class SpellChecker {
 
   async checkSpell(text: string): Promise<SpellCheckResult[]> {
     const completion = await this.openAIClient.chatCompletionsCreate({
-      messages: [...SPELL_CHECK_PROMPT, { role: 'user', content: text }],
+      messages: [
+        {
+          role: 'system',
+          content: SPELL_CHECK_PROMPT,
+        },
+        { role: 'user', content: text },
+      ],
       model: 'gpt-4o-mini',
     });
 
