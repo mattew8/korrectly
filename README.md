@@ -8,7 +8,7 @@ Korrectly는 기존 맞춤법 검사기와 달리, 별도의 사이트 방문이
 
 ## 주요 기능
 
-![2024-12-276 09 23-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/dbe7288e-a690-4371-ba85-e2b390d9015b)
+![2024-12-276 09 23-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/5721ea92-8988-4fd0-8851-3d73d3a57f36)
 
 - ✨ 복사/붙여넣기 없이 웹페이지에서 바로 맞춤법 검사
 - 🔄 사이드 패널을 통한 작업 화면 방해 없는 교정 제안
