@@ -8,6 +8,7 @@ import {
 } from '@/feature/check-spell';
 import { changeDomTextManager } from '@/feature/change-dom-text';
 import { highlightWordManager } from '@/feature/highlight-word';
+import useLimitRequestCount from '../utils/limit-request-count';
 
 const SpellingCheckSidePanelPage = () => {
   const { push } = useExtensionRouter();
@@ -15,10 +16,26 @@ const SpellingCheckSidePanelPage = () => {
     CurrentSpellCheckResult | null | 'finished'
   >(null);
   const [isError, setIsError] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const { requestCount, incrementRequestCount, resetRequestCount } =
+    useLimitRequestCount();
+
+  const isCountLoaded = requestCount !== null;
+  const isRequestCountUnderLimit = isCountLoaded && requestCount < 10;
 
   useEffect(() => {
+    if (!isCountLoaded) {
+      return;
+    }
+
+    if (!isRequestCountUnderLimit) {
+      setShowLimitModal(true);
+      setSpellCheckResults('finished');
+      return;
+    }
+
     handleCheckSpell();
-  }, []);
+  }, [isCountLoaded, isRequestCountUnderLimit]);
 
   const handleCheckSpell = async () => {
     const words = await spellCheckWordsStorage.get();
@@ -30,6 +47,7 @@ const SpellingCheckSidePanelPage = () => {
       const result = await spellChecker.checkSpell(words.join(' '));
       spellCheckManager.setResults(result);
       showNextResult();
+      incrementRequestCount();
     } catch (error) {
       console.error(error);
       setIsError(true);
@@ -68,6 +86,37 @@ const SpellingCheckSidePanelPage = () => {
   const handleReCheckSpell = () => {
     push('confirm-start-check');
   };
+
+  if (showLimitModal) {
+    const handleResetCountLimit = () => {
+      resetRequestCount();
+      setShowLimitModal(false);
+    };
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+        <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+          <h2
+            className="mb-4 text-xl font-bold text-gray-800"
+            onClick={handleResetCountLimit}
+          >
+            무료 사용 횟수 초과
+          </h2>
+          <p className="mb-6 text-gray-600">
+            무료 사용 횟수를 모두 사용하셨습니다. 추가 사용을 원하시면 아래
+            이메일로 연락해 주세요.
+          </p>
+          <p className="mb-6 text-blue-600">contact@example.com</p>
+          <button
+            onClick={() => setShowLimitModal(false)}
+            className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          >
+            확인
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isError) {
     return (
