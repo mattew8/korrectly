@@ -38,19 +38,17 @@ const SpellingCheckSidePanelPage = () => {
 
   const handleCheckSpell = async () => {
     const words = await spellCheckWordsStorage.get();
-    if (words === null || words.length === 0) {
+    if (!words?.length) {
       push('select-element');
       return;
     }
 
     try {
-      // spellCheckManager를 통해 words를 그룹화
       spellCheckManager.setInitialWords(words);
 
-      // 첫 번째 그룹 검사
-      const firstGroup = spellCheckManager.getCurrentGroup();
-      if (firstGroup) {
-        const results = await spellChecker.checkSpell(firstGroup.join(' '));
+      let currentGroup = spellCheckManager.getCurrentGroup();
+      while (currentGroup && !spellCheckManager.isLastGroup()) {
+        const results = await spellChecker.checkSpell(currentGroup.join(' '));
         spellCheckManager.appendResults(results);
 
         const firstResult = spellCheckManager.getCurrentResult();
@@ -60,8 +58,15 @@ const SpellingCheckSidePanelPage = () => {
             targetSentence: firstResult.sentence,
             targetWord: firstResult.error.input,
           });
+          return;
         }
+
+        spellCheckManager.moveToNextGroup();
+        currentGroup = spellCheckManager.getCurrentGroup();
       }
+
+      // 모든 그룹을 검사했는데도 결과가 없으면 finished
+      setSpellCheckResults('finished');
     } catch (error) {
       console.error(error);
       setIsError(true);
@@ -70,6 +75,7 @@ const SpellingCheckSidePanelPage = () => {
 
   const showNextResult = async () => {
     const currentResult = spellCheckManager.getCurrentResult();
+
     if (currentResult) {
       setSpellCheckResults(currentResult);
       highlightWordManager.sendHighlightWordMessage({
@@ -77,7 +83,6 @@ const SpellingCheckSidePanelPage = () => {
         targetWord: currentResult.error.input,
       });
 
-      // 현재 그룹의 마지막 결과라면 다음 그룹 미리 검사
       if (spellCheckManager.shouldFetchNextGroup()) {
         const nextGroup = spellCheckManager.getNextGroup();
         if (nextGroup) {
@@ -91,6 +96,30 @@ const SpellingCheckSidePanelPage = () => {
         }
       }
     } else {
+      // 현재 그룹에서 결과를 찾지 못했고, 마지막 그룹이 아니라면
+      if (!spellCheckManager.isLastGroup()) {
+        const nextGroup = spellCheckManager.getNextGroup();
+        if (nextGroup) {
+          try {
+            const results = await spellChecker.checkSpell(nextGroup.join(' '));
+            spellCheckManager.moveToNextGroup();
+            spellCheckManager.appendResults(results);
+            // 결과를 null로 설정하지 않고 바로 다음 결과 확인
+            const nextResult = spellCheckManager.getCurrentResult();
+            if (nextResult) {
+              setSpellCheckResults(nextResult);
+              highlightWordManager.sendHighlightWordMessage({
+                targetSentence: nextResult.sentence,
+                targetWord: nextResult.error.input,
+              });
+              return;
+            }
+          } catch (error) {
+            console.error('Failed to fetch next group:', error);
+          }
+        }
+      }
+
       setSpellCheckResults('finished');
     }
   };

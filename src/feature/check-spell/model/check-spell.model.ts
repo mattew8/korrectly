@@ -49,8 +49,12 @@ export class SpellCheckManager {
     this.currentGroupIndex++;
   }
 
+  isLastGroup(): boolean {
+    return this.currentGroupIndex === this.wordGroups.length - 1;
+  }
+
   getCurrentResult(): CurrentSpellCheckResult | null {
-    // 모든 결과를 검사했다면 null 반환
+    // 현재 그룹의 결과가 없으면 null 반환
     if (this.currentResultIndex >= this.spellCheckResults.length) {
       return null;
     }
@@ -58,39 +62,30 @@ export class SpellCheckManager {
     // 현재 result부터 시작해서 오류가 있는 첫 번째 result를 찾음
     while (this.currentResultIndex < this.spellCheckResults.length) {
       const currentResult = this.spellCheckResults[this.currentResultIndex];
-
-      // currentResult가 undefined인 경우 다음으로 넘어감
       if (!currentResult) {
         this.currentResultIndex++;
         this.currentErrorIndex = 0;
         continue;
       }
 
-      // 현재 result에 오류가 있는지 확인
       if (currentResult.result && currentResult.result.length > 0) {
         const currentError = currentResult.result[this.currentErrorIndex];
-
-        // currentError가 undefined인 경우 다음으로 넘어감
         if (!currentError) {
           this.prepareNextIndex();
           continue;
         }
 
-        // 다음 검사를 위해 인덱스 준비
         this.prepareNextIndex();
-
         return {
           sentence: currentResult.sentence,
           error: currentError,
         };
       }
 
-      // 현재 result에 오류가 없다면 다음 result로 이동
       this.currentResultIndex++;
       this.currentErrorIndex = 0;
     }
 
-    // 모든 result를 검사했지만 오류를 찾지 못한 경우
     return null;
   }
 
