@@ -9,11 +9,44 @@ export class SpellCheckManager {
   private spellCheckResults: SpellCheckResult[] = [];
   private currentResultIndex = 0;
   private currentErrorIndex = 0;
+  private wordGroups: string[][] = [];
+  private currentGroupIndex = 0;
+  private readonly GROUP_SIZE = 5;
 
-  setResults(spellCheckResults: SpellCheckResult[]) {
-    this.spellCheckResults = spellCheckResults;
+  setInitialWords(words: string[]) {
+    // words를 5개씩 그룹화
+    this.wordGroups = [];
+    for (let i = 0; i < words.length; i += this.GROUP_SIZE) {
+      this.wordGroups.push(words.slice(i, i + this.GROUP_SIZE));
+    }
+    this.currentGroupIndex = 0;
+    this.spellCheckResults = [];
     this.currentResultIndex = 0;
     this.currentErrorIndex = 0;
+  }
+
+  getCurrentGroup(): string[] | null {
+    return this.wordGroups[this.currentGroupIndex] || null;
+  }
+
+  getNextGroup(): string[] | null {
+    return this.wordGroups[this.currentGroupIndex + 1] || null;
+  }
+
+  appendResults(results: SpellCheckResult[]) {
+    this.spellCheckResults.push(...results);
+  }
+
+  shouldFetchNextGroup(): boolean {
+    // 현재 그룹의 마지막 결과를 보고 있고, 다음 그룹이 존재하는 경우
+    return (
+      this.currentResultIndex === this.spellCheckResults.length - 1 &&
+      this.currentGroupIndex < this.wordGroups.length - 1
+    );
+  }
+
+  moveToNextGroup() {
+    this.currentGroupIndex++;
   }
 
   getCurrentResult(): CurrentSpellCheckResult | null {

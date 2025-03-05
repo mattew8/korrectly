@@ -17,8 +17,7 @@ const SpellingCheckSidePanelPage = () => {
   >(null);
   const [isError, setIsError] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
-  const { requestCount, incrementRequestCount, resetRequestCount } =
-    useLimitRequestCount();
+  const { requestCount, resetRequestCount } = useLimitRequestCount();
 
   const isCountLoaded = requestCount !== null;
   const isRequestCountUnderLimit = isCountLoaded && requestCount < 10;
@@ -43,18 +42,33 @@ const SpellingCheckSidePanelPage = () => {
       push('select-element');
       return;
     }
+
     try {
-      const result = await spellChecker.checkSpell(words.join(' '));
-      spellCheckManager.setResults(result);
-      showNextResult();
-      incrementRequestCount();
+      // spellCheckManager를 통해 words를 그룹화
+      spellCheckManager.setInitialWords(words);
+
+      // 첫 번째 그룹 검사
+      const firstGroup = spellCheckManager.getCurrentGroup();
+      if (firstGroup) {
+        const results = await spellChecker.checkSpell(firstGroup.join(' '));
+        spellCheckManager.appendResults(results);
+
+        const firstResult = spellCheckManager.getCurrentResult();
+        if (firstResult) {
+          setSpellCheckResults(firstResult);
+          highlightWordManager.sendHighlightWordMessage({
+            targetSentence: firstResult.sentence,
+            targetWord: firstResult.error.input,
+          });
+        }
+      }
     } catch (error) {
       console.error(error);
       setIsError(true);
     }
   };
 
-  const showNextResult = () => {
+  const showNextResult = async () => {
     const currentResult = spellCheckManager.getCurrentResult();
     if (currentResult) {
       setSpellCheckResults(currentResult);
@@ -62,6 +76,20 @@ const SpellingCheckSidePanelPage = () => {
         targetSentence: currentResult.sentence,
         targetWord: currentResult.error.input,
       });
+
+      // 현재 그룹의 마지막 결과라면 다음 그룹 미리 검사
+      if (spellCheckManager.shouldFetchNextGroup()) {
+        const nextGroup = spellCheckManager.getNextGroup();
+        if (nextGroup) {
+          try {
+            const results = await spellChecker.checkSpell(nextGroup.join(' '));
+            spellCheckManager.moveToNextGroup();
+            spellCheckManager.appendResults(results);
+          } catch (error) {
+            console.error('Failed to fetch next group:', error);
+          }
+        }
+      }
     } else {
       setSpellCheckResults('finished');
     }
