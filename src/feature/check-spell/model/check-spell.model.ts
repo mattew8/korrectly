@@ -108,6 +108,9 @@ export class SpellCheckManager {
       this.currentErrorIndex = 0;
     }
 
+    // null 반환 전 인덱스 초기화
+    this.currentResultIndex = 0;
+    this.currentErrorIndex = 0;
     return null;
   }
 
