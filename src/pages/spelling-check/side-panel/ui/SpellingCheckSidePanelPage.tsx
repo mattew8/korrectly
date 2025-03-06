@@ -88,8 +88,7 @@ const SpellingCheckSidePanelPage = () => {
         if (nextGroup) {
           try {
             const results = await spellChecker.checkSpell(nextGroup.join(' '));
-            spellCheckManager.moveToNextGroup();
-            spellCheckManager.appendResults(results);
+            spellCheckManager.appendNextGroupResults(results);
           } catch (error) {
             console.error('Failed to fetch next group:', error);
           }

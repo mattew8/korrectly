@@ -6,7 +6,7 @@ export interface CurrentSpellCheckResult {
 }
 
 export class SpellCheckManager {
-  private spellCheckResults: SpellCheckResult[] = [];
+  private spellCheckResults: SpellCheckResult[][] = [];
   private currentResultIndex = 0;
   private currentErrorIndex = 0;
   private wordGroups: string[][] = [];
@@ -34,14 +34,23 @@ export class SpellCheckManager {
   }
 
   appendResults(results: SpellCheckResult[]) {
-    this.spellCheckResults.push(...results);
+    this.spellCheckResults[this.currentGroupIndex] = results;
+  }
+
+  appendNextGroupResults(results: SpellCheckResult[]) {
+    this.spellCheckResults[this.currentGroupIndex + 1] = results;
   }
 
   shouldFetchNextGroup(): boolean {
-    // 현재 그룹의 마지막 결과를 보고 있고, 다음 그룹이 존재하는 경우
+    const currentGroupResults = this.spellCheckResults[this.currentGroupIndex];
+    if (!currentGroupResults) return false;
+
+    // 다음 그룹이 있고, 아직 결과가 없으며
+    // 현재 그룹의 마지막 또는 마지막 직전 결과를 보고 있을 때
     return (
-      this.currentResultIndex === this.spellCheckResults.length - 1 &&
-      this.currentGroupIndex < this.wordGroups.length - 1
+      this.getNextGroup() !== null &&
+      !this.spellCheckResults[this.currentGroupIndex + 1] &&
+      this.currentResultIndex >= currentGroupResults.length - 2
     );
   }
 
@@ -54,14 +63,27 @@ export class SpellCheckManager {
   }
 
   getCurrentResult(): CurrentSpellCheckResult | null {
-    // 현재 그룹의 결과가 없으면 null 반환
-    if (this.currentResultIndex >= this.spellCheckResults.length) {
+    const currentGroupResults = this.spellCheckResults[this.currentGroupIndex];
+    if (
+      !currentGroupResults ||
+      this.currentResultIndex >= currentGroupResults.length
+    ) {
+      // 현재 그룹의 모든 결과를 확인했다면 다음 그룹으로
+      if (
+        this.getNextGroup() !== null &&
+        this.spellCheckResults[this.currentGroupIndex + 1]
+      ) {
+        this.moveToNextGroup();
+        this.currentResultIndex = 0;
+        this.currentErrorIndex = 0;
+        return this.getCurrentResult();
+      }
       return null;
     }
 
     // 현재 result부터 시작해서 오류가 있는 첫 번째 result를 찾음
-    while (this.currentResultIndex < this.spellCheckResults.length) {
-      const currentResult = this.spellCheckResults[this.currentResultIndex];
+    while (this.currentResultIndex < currentGroupResults.length) {
+      const currentResult = currentGroupResults[this.currentResultIndex];
       if (!currentResult) {
         this.currentResultIndex++;
         this.currentErrorIndex = 0;
@@ -92,7 +114,8 @@ export class SpellCheckManager {
   private prepareNextIndex(): void {
     this.currentErrorIndex++;
 
-    const currentResult = this.spellCheckResults[this.currentResultIndex];
+    const currentResult =
+      this.spellCheckResults[this.currentGroupIndex]?.[this.currentResultIndex];
     // 현재 result의 모든 오류를 확인했다면
     if (
       !currentResult?.result ||
