@@ -10,6 +10,8 @@ export class SpellChecker {
   }
 
   async checkSpell(text: string): Promise<SpellCheckResult[]> {
+    console.log('checkSpell api', text);
+    const startTime = performance.now();
     const completion = await this.openAIClient.chatCompletionsCreate({
       messages: [
         {
@@ -20,8 +22,12 @@ export class SpellChecker {
       ],
       model: 'gpt-4o-mini',
     });
+    const endTime = performance.now();
+    console.log(`API 응답 시간: ${(endTime - startTime) / 1000}초`);
 
     const answer = completion.choices[0]?.message?.content;
+    console.log(`API answer: ${answer}`);
+
     if (answer === 'ERROR') {
       throw new Error('존재하지 않는 단어입니다!');
     }
