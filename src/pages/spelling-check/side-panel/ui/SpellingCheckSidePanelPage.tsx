@@ -4,11 +4,15 @@ import { spellChecker } from '@/shared/spell-checker';
 import { spellCheckWordsStorage } from '@/feature/select-spell-check-words';
 import {
   CurrentSpellCheckResult,
-  spellCheckManager,
+  SpellCheckResultsManager,
 } from '@/feature/check-spell';
 import { changeDomTextManager } from '@/feature/change-dom-text';
 import { highlightWordManager } from '@/feature/highlight-word';
 import useLimitRequestCount from '../utils/limit-request-count';
+
+const resultsManager = new SpellCheckResultsManager((words) =>
+  spellChecker.checkSpell(words.join(' ')),
+);
 
 const SpellingCheckSidePanelPage = () => {
   const { push } = useExtensionRouter();
@@ -23,16 +27,12 @@ const SpellingCheckSidePanelPage = () => {
   const isRequestCountUnderLimit = isCountLoaded && requestCount < 10;
 
   useEffect(() => {
-    if (!isCountLoaded) {
-      return;
-    }
-
+    if (!isCountLoaded) return;
     if (!isRequestCountUnderLimit) {
       setShowLimitModal(true);
       setSpellCheckResults('finished');
       return;
     }
-
     handleCheckSpell();
   }, [isCountLoaded, isRequestCountUnderLimit]);
 
@@ -44,29 +44,17 @@ const SpellingCheckSidePanelPage = () => {
     }
 
     try {
-      spellCheckManager.setInitialWords(words);
-
-      let currentGroup = spellCheckManager.getCurrentGroup();
-      while (currentGroup && !spellCheckManager.isLastGroup()) {
-        const results = await spellChecker.checkSpell(currentGroup.join(' '));
-        spellCheckManager.appendResults(results);
-
-        const firstResult = spellCheckManager.getCurrentResult();
-        if (firstResult) {
-          setSpellCheckResults(firstResult);
-          highlightWordManager.sendHighlightWordMessage({
-            targetSentence: firstResult.sentence,
-            targetWord: firstResult.error.input,
-          });
-          return;
-        }
-
-        spellCheckManager.moveToNextGroup();
-        currentGroup = spellCheckManager.getCurrentGroup();
+      resultsManager.setInitialWords(words);
+      const firstResult = await resultsManager.getCurrentResult();
+      if (firstResult) {
+        setSpellCheckResults(firstResult);
+        highlightWordManager.sendHighlightWordMessage({
+          targetSentence: firstResult.sentence,
+          targetWord: firstResult.error.input,
+        });
+      } else {
+        setSpellCheckResults('finished');
       }
-
-      // 모든 그룹을 검사했는데도 결과가 없으면 finished
-      setSpellCheckResults('finished');
     } catch (error) {
       console.error(error);
       setIsError(true);
@@ -74,56 +62,24 @@ const SpellingCheckSidePanelPage = () => {
   };
 
   const showNextResult = async () => {
-    const currentResult = spellCheckManager.getCurrentResult();
-
-    if (currentResult) {
-      setSpellCheckResults(currentResult);
-      highlightWordManager.sendHighlightWordMessage({
-        targetSentence: currentResult.sentence,
-        targetWord: currentResult.error.input,
-      });
-
-      if (spellCheckManager.shouldFetchNextGroup()) {
-        const nextGroup = spellCheckManager.getNextGroup();
-        if (nextGroup) {
-          try {
-            const results = await spellChecker.checkSpell(nextGroup.join(' '));
-            spellCheckManager.appendNextGroupResults(results);
-          } catch (error) {
-            console.error('Failed to fetch next group:', error);
-          }
-        }
+    try {
+      const nextResult = await resultsManager.getCurrentResult();
+      if (nextResult) {
+        setSpellCheckResults(nextResult);
+        highlightWordManager.sendHighlightWordMessage({
+          targetSentence: nextResult.sentence,
+          targetWord: nextResult.error.input,
+        });
+      } else {
+        setSpellCheckResults('finished');
       }
-    } else {
-      // 현재 그룹에서 결과를 찾지 못했고, 마지막 그룹이 아니라면
-      if (!spellCheckManager.isLastGroup()) {
-        const nextGroup = spellCheckManager.getNextGroup();
-        if (nextGroup) {
-          try {
-            const results = await spellChecker.checkSpell(nextGroup.join(' '));
-            spellCheckManager.moveToNextGroup();
-            spellCheckManager.appendResults(results);
-            // 결과를 null로 설정하지 않고 바로 다음 결과 확인
-            const nextResult = spellCheckManager.getCurrentResult();
-            if (nextResult) {
-              setSpellCheckResults(nextResult);
-              highlightWordManager.sendHighlightWordMessage({
-                targetSentence: nextResult.sentence,
-                targetWord: nextResult.error.input,
-              });
-              return;
-            }
-          } catch (error) {
-            console.error('Failed to fetch next group:', error);
-          }
-        }
-      }
-
-      setSpellCheckResults('finished');
+    } catch (error) {
+      console.error('Failed to get next result:', error);
+      setIsError(true);
     }
   };
 
-  const handleApplyCorrection = () => {
+  const handleApplyCorrection = async () => {
     if (spellCheckResults === null || spellCheckResults === 'finished') {
       return;
     }
@@ -132,11 +88,11 @@ const SpellingCheckSidePanelPage = () => {
       targetWord: spellCheckResults.error.input,
       replaceWord: spellCheckResults.error.output,
     });
-    showNextResult();
+    await showNextResult();
   };
 
-  const handleSkipCorrection = () => {
-    showNextResult();
+  const handleSkipCorrection = async () => {
+    await showNextResult();
   };
 
   const handleReCheckSpell = () => {
