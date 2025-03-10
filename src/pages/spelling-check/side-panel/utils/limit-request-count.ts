@@ -16,10 +16,8 @@ const useLimitRequestCount = () => {
       namespace: chrome.storage.AreaName,
     ) => {
       const newValue = changes['request-count']?.newValue;
-      console.log('listener', changes);
 
       if (namespace === 'local' && typeof newValue === 'number') {
-        console.log('newValue', newValue);
         setRequestCount(newValue);
       }
     };

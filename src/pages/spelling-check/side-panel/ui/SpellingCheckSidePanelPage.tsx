@@ -24,7 +24,7 @@ const SpellingCheckSidePanelPage = () => {
   const { requestCount, resetRequestCount } = useLimitRequestCount();
 
   const isCountLoaded = requestCount !== null;
-  const isRequestCountUnderLimit = isCountLoaded && requestCount < 10;
+  const isRequestCountUnderLimit = isCountLoaded && requestCount < 20;
 
   useEffect(() => {
     if (!isCountLoaded) return;
@@ -118,7 +118,7 @@ const SpellingCheckSidePanelPage = () => {
             무료 사용 횟수를 모두 사용하셨습니다. 추가 사용을 원하시면 아래
             이메일로 연락해 주세요.
           </p>
-          <p className="mb-6 text-blue-600">contact@example.com</p>
+          <p className="mb-6 text-blue-600">mattew4483@gmail.com</p>
           <button
             onClick={() => setShowLimitModal(false)}
             className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
