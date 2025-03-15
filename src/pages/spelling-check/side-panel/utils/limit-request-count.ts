@@ -5,7 +5,6 @@ const useLimitRequestCount = () => {
 
   useEffect(() => {
     chrome.storage.local.get('request-count').then((data) => {
-      console.log('get data', data);
       if (typeof data['request-count'] === 'number') {
         setRequestCount(data['request-count']);
       }
@@ -28,7 +27,6 @@ const useLimitRequestCount = () => {
   }, []);
 
   const incrementRequestCount = () => {
-    console.log('incrementRequestCount', requestCount);
     const count = requestCount ?? 0;
     chrome.storage.local.set({ 'request-count': count + 1 });
   };

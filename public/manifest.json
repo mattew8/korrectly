@@ -2,7 +2,7 @@
   "name": "Korrectly - 한국어 맞춤법 검사기",
   "description": "Korrectly는 복사/붙여넣기 없이 웹페이지에서 바로 맞춤법을 검사하고 수정할 수 있는 크롬 확장 프로그램입니다.",
   "manifest_version": 3,
-  "version": "1.0.2",
+  "version": "1.0.22",
   "permissions": ["sidePanel", "storage"],
   "background": {
     "service_worker": "service-worker.js"
