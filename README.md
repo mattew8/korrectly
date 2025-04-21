@@ -16,8 +16,8 @@ Korrectly는 기존 맞춤법 검사기와 달리, 별도의 사이트 방문이
 
 ## 설치 방법
 
-1. ~~Chrome 웹 스토어에서 'Korrectly' 검색 또는 [링크](웹스토어_링크)를 통해 설치~~
-2. ~~브라우저 우측 상단의 확장 프로그램 아이콘 클릭으로 활성화~~
+1. Chrome 웹 스토어에서 'Korrectly' 검색 또는 [링크](https://chromewebstore.google.com/detail/korrectly-%ED%95%9C%EA%B5%AD%EC%96%B4-%EB%A7%9E%EC%B6%A4%EB%B2%95-%EA%B2%80%EC%82%AC%EA%B8%B0/bblnbbhgemlmbmlhijmpnkclfnhfchpm)를 통해 설치
+2. 브라우저 우측 상단의 확장 프로그램 아이콘 클릭으로 활성화
 
 ### 개발자 모드 설치
 
