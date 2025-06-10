@@ -13,6 +13,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'), // 번들링된 파일의 저장 경로
     filename: '[name].js', // 번들링된 JavaScript 파일의 이름
+    publicPath: 'chrome-extension://__MSG_@@extension_id__/', // 크롬 확장 프로그램 파일 경로 설정 (런타임에 실제 익스텐션 ID로 대체)
   },
   module: {
     rules: [
