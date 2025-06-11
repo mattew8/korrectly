@@ -24,7 +24,7 @@ const SpellingCheckSidePanelPage = () => {
   const { requestCount, resetRequestCount } = useLimitRequestCount();
 
   const isCountLoaded = requestCount !== null;
-  const isRequestCountUnderLimit = isCountLoaded && requestCount < 20;
+  const isRequestCountUnderLimit = isCountLoaded && requestCount < 100;
 
   useEffect(() => {
     if (!isCountLoaded) return;

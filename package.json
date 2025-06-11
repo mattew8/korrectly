@@ -8,7 +8,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "openai": "^4.77.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
