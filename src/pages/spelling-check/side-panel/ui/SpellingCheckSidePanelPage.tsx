@@ -27,7 +27,9 @@ const SpellingCheckSidePanelPage = () => {
   const isRequestCountUnderLimit = isCountLoaded && requestCount < 100;
 
   useEffect(() => {
-    if (!isCountLoaded) return;
+    if (!isCountLoaded) {
+      return;
+    }
     if (!isRequestCountUnderLimit) {
       setShowLimitModal(true);
       setSpellCheckResults('finished');
@@ -106,8 +108,8 @@ const SpellingCheckSidePanelPage = () => {
     };
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-        <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+      <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black bg-opacity-50">
+        <div className="p-6 w-full max-w-md bg-white rounded-lg shadow-xl">
           <h2
             className="mb-4 text-xl font-bold text-gray-800"
             onClick={handleResetCountLimit}
@@ -121,7 +123,7 @@ const SpellingCheckSidePanelPage = () => {
           <p className="mb-6 text-blue-600">mattew4483@gmail.com</p>
           <button
             onClick={() => setShowLimitModal(false)}
-            className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+            className="px-4 py-2 w-full text-white bg-blue-500 rounded hover:bg-blue-600"
           >
             확인
           </button>
@@ -132,7 +134,7 @@ const SpellingCheckSidePanelPage = () => {
 
   if (isError) {
     return (
-      <div className="min-h-screen p-6 bg-gray-50">
+      <div className="p-6 min-h-screen bg-gray-50">
         <div className="p-8 space-y-4 text-center">
           <div className="mb-4 text-5xl text-red-500">
             <span role="img" aria-label="error">
@@ -147,7 +149,7 @@ const SpellingCheckSidePanelPage = () => {
           </p>
           <button
             onClick={handleReCheckSpell}
-            className="px-6 py-2 mt-4 text-white transition-colors duration-200 bg-blue-500 rounded-md shadow-sm hover:bg-blue-600"
+            className="px-6 py-2 mt-4 text-white bg-blue-500 rounded-md shadow-sm transition-colors duration-200 hover:bg-blue-600"
           >
             다시 시도하기
           </button>
@@ -159,7 +161,7 @@ const SpellingCheckSidePanelPage = () => {
   const isLoading = spellCheckResults === null;
   if (isLoading) {
     return (
-      <div className="min-h-screen p-6 bg-gray-50">
+      <div className="p-6 min-h-screen bg-gray-50">
         <div className="p-8 space-y-4 text-center">
           <div className="inline-block mb-4 text-4xl animate-spin">
             <span role="img" aria-label="loading">
@@ -195,7 +197,7 @@ const SpellingCheckSidePanelPage = () => {
   return (
     <div className="p-4">
       <div className="space-y-4">
-        <div className="p-4 bg-white border rounded-lg shadow">
+        <div className="p-4 bg-white rounded-lg border shadow">
           <h3 className="mb-2 font-bold">맞춤법 검사 결과</h3>
           <div className="mb-4">
             <p className="text-gray-600">문장:</p>
@@ -230,7 +232,7 @@ const SpellingCheckSidePanelPage = () => {
 
         <button
           onClick={handleReCheckSpell}
-          className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          className="px-4 py-2 w-full text-white bg-blue-500 rounded hover:bg-blue-600"
         >
           처음부터 다시 검사하기
         </button>

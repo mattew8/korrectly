@@ -7,6 +7,8 @@ const useLimitRequestCount = () => {
     chrome.storage.local.get('request-count').then((data) => {
       if (typeof data['request-count'] === 'number') {
         setRequestCount(data['request-count']);
+      } else {
+        setRequestCount(0);
       }
     });
 
