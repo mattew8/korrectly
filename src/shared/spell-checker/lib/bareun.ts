@@ -1,11 +1,4 @@
-interface BareunRevisionDto {
-  document: { content: string; language: string };
-  encoding_type: string;
-  auto_split_sentence: boolean;
-  config: {
-    enable_sentence_check: boolean;
-  };
-}
+import { BareunRevisionDto } from '../model/bareun';
 
 export function convertTextToBareunFormat(text: string): BareunRevisionDto {
   return {
