@@ -6,9 +6,9 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
   mode: 'production',
   entry: {
-    'content-scripts': path.join(__dirname, 'src/app/content-scripts.tsx'),
-    'service-worker': path.join(__dirname, 'src/app/service-worker.ts'),
-    'side-panel': path.join(__dirname, 'src/app/side-panel.tsx'),
+    'content-scripts': path.join(__dirname, 'src/content-scripts.tsx'),
+    'service-worker': path.join(__dirname, 'src/service-worker.ts'),
+    'side-panel': path.join(__dirname, 'src/side-panel.tsx'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'), // 번들링된 파일의 저장 경로
