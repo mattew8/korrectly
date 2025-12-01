@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import ContentScript from './content-script/ContentScript';
+import { ContentScript } from './content-script/app';
 
 const appContainer = document.createElement('div');
 appContainer.id = 'korrectly-root';

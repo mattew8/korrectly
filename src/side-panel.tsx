@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import SidePanel from './side-panel/SidePanel';
+import { SidePanel } from './side-panel/app';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
