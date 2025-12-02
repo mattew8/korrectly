@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   addMessageListener,
   removeMessageListener,
+  sendMessage,
 } from '@/side-panel/shared/messaging';
 import { RunSpellCheckButton } from '@/side-panel/features/run-spell-check';
 import { SelectElementGuide } from './ui/SelectElementGuide';
@@ -24,7 +25,7 @@ export const SelectElementSidePanelPage = () => {
   }, []);
 
   function handleResetWords() {
-    chrome.runtime.sendMessage({ action: 'reselect-spell-check-texts' });
+    sendMessage({ action: 'reselect-spell-check-texts' });
     setSelectedTexts(null);
   }
 
