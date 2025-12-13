@@ -45,7 +45,7 @@ export function RunSpellCheckButton({ targetText }: { targetText: string }) {
 
   return (
     <AnimateButton onClick={handleSpellCheck} isLoading={isLoading}>
-      {isLoading ? '맞춤법 검사 중...' : '검사 시작하기'}
+      {isLoading ? '검사 중...' : '검사 시작하기'}
     </AnimateButton>
   );
 }
