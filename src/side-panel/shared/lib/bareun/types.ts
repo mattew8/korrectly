@@ -7,51 +7,59 @@ export interface BareunRevisionDto {
   };
 }
 
+export type RevisionCategory =
+  | 'UNKNOWN'
+  | 'GRAMMER'
+  | 'WORD'
+  | 'SPACING'
+  | 'STANDARD'
+  | 'TYPO'
+  | 'FOREIGN_WORD'
+  | 'CONFUSABLE_WORDS'
+  | 'SENTENCE'
+  | 'CONFIRM';
+
+export interface TextSpan {
+  content: string;
+  begin_offset: number;
+  length: number;
+}
+
+export interface Revision {
+  revised: string;
+  score: number;
+  category: RevisionCategory;
+  helpId: string;
+}
+
+export interface RevisedBlock {
+  origin: TextSpan;
+  revised: string;
+  revisions: Revision[];
+  nested?: RevisedBlock[];
+  lemma?: string;
+  pos?: string;
+}
+
+export interface ReviseHelp {
+  id: string;
+  category: RevisionCategory;
+  comment: string;
+  examples: string[];
+  rule_article: string;
+}
+
+export interface RevisedSentence {
+  origin: string;
+  revised: string;
+}
+
 export interface BareunResponseDto {
   origin: string;
   revised: string;
-  revisedBlocks: [
-    {
-      origin: {
-        content: string;
-      };
-      revised: string;
-      revisions: [
-        {
-          revised: string;
-          category: 'SPACING';
-          helpId: '띄어쓰기_공통';
-        },
-      ];
-    },
-    {
-      origin: {
-        content: string;
-      };
-      revised: string;
-      revisions: [
-        {
-          revised: string;
-          category: 'TYPO';
-          helpId: 'Typo';
-        },
-      ];
-    },
-  ];
-  helps: {
-    Typo: {
-      id: 'Typo';
-      category: 'TYPO';
-      comment: '출현이 가능한 유사한 단어를 추천합니다.';
-      examples: [];
-      ruleArticle: '';
-    };
-    띄어쓰기_공통: {
-      id: '띄어쓰기_공통';
-      category: 'SPACING';
-      comment: '문장의 각 단어는 띄어 씀을 원칙으로 한다.';
-      examples: ['오늘 날씨 좋다.'];
-      ruleArticle: '한글맞춤법, 제1장 총칙, 제2항';
-    };
-  };
+  revised_blocks: RevisedBlock[];
+  revised_sentences: RevisedSentence[];
+  helps: Record<string, ReviseHelp>;
+  language: string;
+  tokens_count: number;
 }

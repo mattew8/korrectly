@@ -19,4 +19,16 @@ export interface SpellCheckError {
    * @description 오류 유형
    */
   etype: string;
+  /**
+   * @description 오류 카테고리 설명
+   */
+  description?: string;
+  /**
+   * @description 관련 규정
+   */
+  rule?: string;
+  /**
+   * @description 올바른 사용 예시들
+   */
+  examples?: string[];
 }
