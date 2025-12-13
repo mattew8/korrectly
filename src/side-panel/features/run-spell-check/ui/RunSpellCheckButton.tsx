@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useExtensionRouter } from '@/common/router';
 import { checkSpelling } from '../api/check-spelling';
 import { useSpellCheckResultStore } from '../model/spell-check-result-store';
-import { useState } from 'react';
+import { AnimateButton } from './AnimateButton';
 
 export function RunSpellCheckButton({ targetText }: { targetText: string }) {
   const router = useExtensionRouter();
@@ -43,12 +44,8 @@ export function RunSpellCheckButton({ targetText }: { targetText: string }) {
   }
 
   return (
-    <button
-      onClick={handleSpellCheck}
-      className="flex-1 px-6 py-2 text-white transition-colors duration-200 bg-blue-500 rounded-md shadow-sm hover:bg-blue-600"
-      disabled={isLoading}
-    >
+    <AnimateButton onClick={handleSpellCheck} isLoading={isLoading}>
       {isLoading ? '검사 중...' : '검사 시작하기'}
-    </button>
+    </AnimateButton>
   );
 }
