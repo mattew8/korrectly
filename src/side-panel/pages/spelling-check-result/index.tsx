@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useExtensionRouter } from '@/common/router';
 
 import { useSpellCheckResultStore } from '@/side-panel/features/run-spell-check';
+import { getErrorInfoFromSpellCheckResult } from './model/spelling-check-result-error-handling';
 
 export const SpellingCheckResultPage = () => {
   const { push } = useExtensionRouter();
@@ -82,6 +83,9 @@ export const SpellingCheckResultPage = () => {
     );
   }
 
+  const { input, output, categoryLabel, description } =
+    getErrorInfoFromSpellCheckResult(currentResult);
+
   return (
     <div className="p-4">
       <div className="space-y-4">
@@ -89,20 +93,24 @@ export const SpellingCheckResultPage = () => {
           <h3 className="mb-2 font-bold">
             맞춤법 검사 결과 ({currentIndex + 1}/{spellCheckResults.length})
           </h3>
+
           <div className="mb-4">
-            <p className="text-gray-600">문장:</p>
-            <p className="mt-1">{currentResult.sentence}</p>
+            <p className="text-sm font-semibold text-gray-600">원문:</p>
+            <p className="mt-1 text-gray-800">{input}</p>
           </div>
+
           <div className="mb-4">
-            <p className="text-gray-600">오류 내용:</p>
-            <p className="mt-1 text-red-500">
-              {currentResult.result[0]?.etype || '알 수 없는 오류'}
+            <p className="text-sm font-semibold text-gray-600">수정 제안:</p>
+            <p className="mt-1 text-lg font-semibold text-green-600">
+              {output}
             </p>
           </div>
+
           <div className="mb-4">
-            <p className="text-gray-600">수정 제안:</p>
-            <p className="mt-1 text-green-500">
-              {currentResult.result[0]?.output}
+            <p className="text-sm font-semibold text-gray-600">오류 유형:</p>
+            <p className="mt-1">
+              <span className="text-red-500">{categoryLabel}</span>
+              {description && ` (${description})`}
             </p>
           </div>
         </div>
