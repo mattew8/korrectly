@@ -23,18 +23,40 @@ export function convertBareunResponseToSpellCheckResult(
 ): SpellCheckResult[] {
   const results: SpellCheckResult[] = [];
 
-  response.revisedBlocks.forEach((block) => {
-    block.revisions.forEach((revision) => {
-      results.push({
-        sentence: block.origin.content,
-        result: [
-          {
-            input: block.origin.content,
-            output: revision.revised,
-            etype: revision.category,
-          },
-        ],
-      });
+  // API 응답이 camelCase 또는 snake_case로 올 수 있음
+  const revisedBlocks =
+    response.revised_blocks ||
+    (response as unknown as { revisedBlocks: typeof response.revised_blocks })
+      .revisedBlocks ||
+    [];
+
+  const helps = response.helps || {};
+
+  revisedBlocks.forEach((block) => {
+    if (!block.revisions || block.revisions.length === 0) return;
+
+    // 가장 높은 점수의 revision 선택
+    const bestRevision = block.revisions.reduce((prev, current) => {
+      return current.score > prev.score ? current : prev;
+    });
+
+    // help 정보 가져오기
+    const help = helps[bestRevision.helpId];
+
+    results.push({
+      sentence: response.origin,
+      result: [
+        {
+          input: block.origin.content,
+          output: bestRevision.revised,
+          etype: bestRevision.category,
+          description: help?.comment,
+          rule:
+            help?.rule_article ||
+            (help as unknown as { ruleArticle?: string })?.ruleArticle,
+          examples: help?.examples,
+        },
+      ],
     });
   });
 
