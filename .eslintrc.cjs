@@ -25,15 +25,24 @@ module.exports = {
       {
         zones: [
           // Cross-context import restrictions
+          // Each context can only import from common or itself
           {
             target: './src/content-script',
-            from: './src/side-panel',
-            message: 'content-script cannot import from side-panel',
+            from: './src/!(content-script|common)/**',
+            message:
+              'content-script can only import from common or itself (not from other contexts)',
           },
           {
             target: './src/side-panel',
-            from: './src/content-script',
-            message: 'side-panel cannot import from content-script',
+            from: './src/!(side-panel|common)/**',
+            message:
+              'side-panel can only import from common or itself (not from other contexts)',
+          },
+          {
+            target: './src/service-worker',
+            from: './src/!(service-worker|common)/**',
+            message:
+              'service-worker can only import from common or itself (not from other contexts)',
           },
           // FSD layer restrictions for content-script
           {
