@@ -1,14 +1,17 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const CopyPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const Dotenv = require('dotenv-webpack');
+import CopyPlugin from 'copy-webpack-plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Dotenv from 'dotenv-webpack';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   mode: 'production',
   entry: {
-    'content-scripts': path.join(__dirname, 'src/content-scripts.tsx'),
-    'service-worker': path.join(__dirname, 'src/service-worker.ts'),
-    'side-panel': path.join(__dirname, 'src/side-panel.tsx'),
+    'content-scripts': path.join(__dirname, 'src/content-script/index.tsx'),
+    'service-worker': path.join(__dirname, 'src/service-worker/index.ts'),
+    'side-panel': path.join(__dirname, 'src/side-panel/index.tsx'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'), // 번들링된 파일의 저장 경로

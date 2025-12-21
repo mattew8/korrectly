@@ -5,6 +5,7 @@ chrome.action.onClicked.addListener((tab) => {
   if (!tabId) {
     return;
   }
+
   chromeStorage.create('url', 'select-element');
   chrome.sidePanel.open({ tabId });
 });
